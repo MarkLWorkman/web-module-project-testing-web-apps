@@ -26,7 +26,13 @@ test("renders ONE error message if user enters less then 5 characters into first
   expect(errors.length).toEqual(1);
 });
 
-test("renders THREE error messages if user enters no values into any fields.", async () => {});
+test("renders THREE error messages if user enters no values into any fields.", async () => {
+  render(<ContactForm />);
+  const submit = screen.queryByTestId("submit");
+  userEvent.click(submit);
+  const errors = screen.queryAllByText(/^(.*?(error)[^$]*)$/i);
+  expect(errors.length).toEqual(3);
+});
 
 test("renders ONE error message if user enters a valid first name and last name but no email.", async () => {});
 
