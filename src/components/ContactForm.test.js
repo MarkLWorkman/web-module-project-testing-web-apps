@@ -56,8 +56,56 @@ test('renders "email must be a valid email address" if an invalid email is enter
   expect(errors.length).toEqual(1);
 });
 
-test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {});
+test('renders "lastName is a required field" if an last name is not entered and the submit button is clicked', async () => {
+  render(<ContactForm />);
+  const submit = screen.queryByTestId("submit");
+  userEvent.click(submit);
+  const errors = screen.queryAllByText(
+    /^(.*?(lastName is a required field)[^$]*)$/i
+  );
+  expect(errors.length).toEqual(1);
+});
 
-test("renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.", async () => {});
+test("renders all firstName, lastName and email text when submitted. Does NOT render message if message is not submitted.", async () => {
+  render(<ContactForm />);
+  const username = screen.getByLabelText("First Name*");
+  userEvent.type(username, "abcdef");
+  const lastname = screen.getByLabelText("Last Name*");
+  userEvent.type(lastname, "abcdef");
+  const email = screen.getByLabelText("Email*");
+  userEvent.type(email, "abcdef@gmail.com");
+  const submit = screen.queryByTestId("submit");
+  userEvent.click(submit);
 
-test("renders all fields text when all fields are submitted.", async () => {});
+  const fNameSubmit = screen.queryByText(/First Name:/i);
+  expect(fNameSubmit).toBeInTheDocument();
+  const lNameSubmit = screen.queryByText(/Last Name:/i);
+  expect(lNameSubmit).toBeInTheDocument();
+  const emailSubmit = screen.queryByText(/Email:/i);
+  expect(emailSubmit).toBeInTheDocument();
+  const messageSubmit = screen.queryByText(/Message:/i);
+  expect(messageSubmit).not.toBeInTheDocument();
+});
+
+test("renders all fields text when all fields are submitted.", async () => {
+  render(<ContactForm />);
+  const username = screen.getByLabelText("First Name*");
+  userEvent.type(username, "abcdef");
+  const lastname = screen.getByLabelText("Last Name*");
+  userEvent.type(lastname, "abcdef");
+  const email = screen.getByLabelText("Email*");
+  userEvent.type(email, "abcdef@gmail.com");
+  const message = screen.getByLabelText("Message");
+  userEvent.type(message, "I am a test message");
+  const submit = screen.queryByTestId("submit");
+  userEvent.click(submit);
+
+  const fNameSubmit = screen.queryByText(/First Name:/i);
+  expect(fNameSubmit).toBeInTheDocument();
+  const lNameSubmit = screen.queryByText(/Last Name:/i);
+  expect(lNameSubmit).toBeInTheDocument();
+  const emailSubmit = screen.queryByText(/Email:/i);
+  expect(emailSubmit).toBeInTheDocument();
+  const messageSubmit = screen.queryByText(/Message:/i);
+  expect(messageSubmit).toBeInTheDocument();
+});
